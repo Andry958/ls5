@@ -3,13 +3,18 @@ const seachBtn = document.querySelector("#s");
 const seachInput = document.querySelector("#ss");
 const grid = document.querySelector('#card-grid');
 
-async function loadProducts() {
-    const response = await fetch(api + `&page=${pagination.page}&s=batman`);
-    const data = await response.json();
-
-    console.log(data);
-    pagination.total = parseInt(data.totalResults);
-    data.Search.forEach(i => addProductToHtml(i))
+async function loadProducts(query_) {
+    try{
+        const response = await fetch(api + `&s=${query_}&page=${pagination.page}`);
+        const data = await response.json();
+        console.log(data);
+        pagination.total = parseInt(data.totalResults);
+        data.Search.forEach(i => addProductToHtml(i))
+        
+    }
+    catch(ex){
+        alert("Введіть пошуковий запит")
+    }
 }
 
 function addProductToHtml(i) {
@@ -19,8 +24,10 @@ function addProductToHtml(i) {
                                 class="card-img-top">
                             <div class="card-body">
                                 <h5 class="card-title">${i.Title}</h5>
-                                <p class="card-text">${i.Year}<br> Id:    ${i.imdbID}</p>
+                                <p class="card-text">${i.Year}</p>
+                                <a class = "a_" href="forMovie.html?id=${i.imdbID}">Детальніше</a>
                             </div>
+
                         </div>
                     </div>`
 }
@@ -40,11 +47,13 @@ async function search(){
     data.Search.forEach(i => addProductToHtml(i))
 }
 document.addEventListener('DOMContentLoaded', () => {
-    loadProducts();
+    
 })
 
 
 loadMoreBtn.onclick = () => {
+    const query = seachInput.value; 
+
     pagination.next();
-    loadProducts();
+    loadProducts(query);
 }
